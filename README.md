@@ -48,16 +48,16 @@ A heading is nested under the closest previous heading of a lower level. `H2` th
 
 ```php
 // Inject missing H2–H6 ids. Existing ids are kept.
-$html = cinq_add_heading_ids( $html );
+$html = cinq_wp_table_of_contents_add_heading_ids( $html );
 
 // Parse headings that already have an id.
-$items = cinq_parse_toc_items( $html );
+$items = cinq_wp_table_of_contents_parse_items( $html );
 
 // Inject ids, then parse.
-$items = cinq_toc_items( $html );
+$items = cinq_wp_table_of_contents_items( $html );
 
 // Both at once.
-$data = cinq_toc( $html );
+$data = cinq_wp_table_of_contents( $html );
 // array{ content: string, items: array }
 ```
 
@@ -100,8 +100,8 @@ function theme_toc_list( array $items ): void {
 `single.php`:
 
 ```php
-$items = function_exists( 'cinq_toc_items' )
-	? cinq_toc_items( get_the_content() )
+$items = function_exists( 'cinq_wp_table_of_contents_items' )
+	? cinq_wp_table_of_contents_items( get_the_content() )
 	: array();
 
 if ( array() !== $items ) {
@@ -120,13 +120,20 @@ the_content();
 
 ## Migration from 2.x
 
-3.0.0 names the hook after the plugin slug, like every CINQ plugin: `cinq-wp-table-of-contents` gives the `cinq_wp_table_of_contents_` prefix. The old name is not kept.
+3.0.0 names the hook, functions and constant after the plugin slug, like every CINQ plugin: `cinq-wp-table-of-contents` gives the `cinq_wp_table_of_contents_` prefix. The old names are not kept.
 
-| 2.x | 3.0.0 |
-| --- | --- |
-| `cinq_toc_post_types` | `cinq_wp_table_of_contents_post_types` |
+| | 2.x | 3.0.0 |
+| --- | --- | --- |
+| Filter | `cinq_toc_post_types` | `cinq_wp_table_of_contents_post_types` |
+| Function | `cinq_toc()` | `cinq_wp_table_of_contents()` |
+| Function | `cinq_toc_items()` | `cinq_wp_table_of_contents_items()` |
+| Function | `cinq_parse_toc_items()` | `cinq_wp_table_of_contents_parse_items()` |
+| Function | `cinq_add_heading_ids()` | `cinq_wp_table_of_contents_add_heading_ids()` |
+| Function | `cinq_toc_nest_items()` | `cinq_wp_table_of_contents_nest_items()` |
+| Function | `cinq_toc_filter_content()` | `cinq_wp_table_of_contents_filter_content()` |
+| Constant | `CINQ_TOC_POST_TYPES` | `CINQ_WP_TABLE_OF_CONTENTS_POST_TYPES` |
 
-Rename the filter in `add_filter()` and `remove_filter()` calls. The functions and constants keep their names.
+Rename them in the theme: the filter in `add_filter()` and `remove_filter()` calls, the functions where they are called, including `function_exists()` checks, and in Twig functions that wrap them.
 
 ## License
 

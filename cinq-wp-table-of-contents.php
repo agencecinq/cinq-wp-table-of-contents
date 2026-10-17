@@ -12,7 +12,7 @@
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: cinq-wp-table-of-contents
  *
- * @package CinqTableOfContents
+ * @package CinqWpTableOfContents
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Default post types that receive heading ids via the_content.
  */
-const CINQ_TOC_POST_TYPES = array( 'post', 'page' );
+const CINQ_WP_TABLE_OF_CONTENTS_POST_TYPES = array( 'post', 'page' );
 
 /**
  * Add unique id attributes to H2–H6 headings that do not already have one.
@@ -31,7 +31,7 @@ const CINQ_TOC_POST_TYPES = array( 'post', 'page' );
  * @param string $content HTML content.
  * @return string
  */
-function cinq_add_heading_ids( string $content ): string {
+function cinq_wp_table_of_contents_add_heading_ids( string $content ): string {
 	if ( '' === $content || ! preg_match( '/<h[2-6]\b/i', $content ) ) {
 		return $content;
 	}
@@ -78,7 +78,7 @@ function cinq_add_heading_ids( string $content ): string {
 /**
  * Extract a nested table-of-contents tree from HTML content.
  *
- * Expects heading ids from cinq_add_heading_ids() or the editor.
+ * Expects heading ids from cinq_wp_table_of_contents_add_heading_ids() or the editor.
  * A heading is nested under the closest previous heading of a lower level.
  * A skipped level (H2 then H4) attaches to that closest parent. A heading with
  * no shallower predecessor is a root.
@@ -86,7 +86,7 @@ function cinq_add_heading_ids( string $content ): string {
  * @param string $content HTML content.
  * @return array<int, array{title: string, id: string, level: int, children: array}>
  */
-function cinq_parse_toc_items( string $content ): array {
+function cinq_wp_table_of_contents_parse_items( string $content ): array {
 	if ( '' === $content || ! preg_match( '/<h[2-6]\b/i', $content ) ) {
 		return array();
 	}
@@ -115,7 +115,7 @@ function cinq_parse_toc_items( string $content ): array {
 		);
 	}
 
-	return cinq_toc_nest_items( $flat );
+	return cinq_wp_table_of_contents_nest_items( $flat );
 }
 
 /**
@@ -124,7 +124,7 @@ function cinq_parse_toc_items( string $content ): array {
  * @param array<int, array{title: string, id: string, level: int}> $items Document order.
  * @return array<int, array{title: string, id: string, level: int, children: array}>
  */
-function cinq_toc_nest_items( array $items ): array {
+function cinq_wp_table_of_contents_nest_items( array $items ): array {
 	$tree  = array();
 	$stack = array();
 
@@ -180,12 +180,12 @@ function cinq_toc_nest_items( array $items ): array {
  * @param string $content HTML content.
  * @return array{content: string, items: array<int, array{title: string, id: string, level: int, children: array}>}
  */
-function cinq_toc( string $content ): array {
-	$content = cinq_add_heading_ids( $content );
+function cinq_wp_table_of_contents( string $content ): array {
+	$content = cinq_wp_table_of_contents_add_heading_ids( $content );
 
 	return array(
 		'content' => $content,
-		'items'   => cinq_parse_toc_items( $content ),
+		'items'   => cinq_wp_table_of_contents_parse_items( $content ),
 	);
 }
 
@@ -195,8 +195,8 @@ function cinq_toc( string $content ): array {
  * @param string $content HTML content.
  * @return array<int, array{title: string, id: string, level: int, children: array}>
  */
-function cinq_toc_items( string $content ): array {
-	return cinq_parse_toc_items( cinq_add_heading_ids( $content ) );
+function cinq_wp_table_of_contents_items( string $content ): array {
+	return cinq_wp_table_of_contents_parse_items( cinq_wp_table_of_contents_add_heading_ids( $content ) );
 }
 
 /**
@@ -205,7 +205,7 @@ function cinq_toc_items( string $content ): array {
  * @param string $content Post content.
  * @return string
  */
-function cinq_toc_filter_content( string $content ): string {
+function cinq_wp_table_of_contents_filter_content( string $content ): string {
 	if ( is_admin() || ! is_singular() ) {
 		return $content;
 	}
@@ -215,9 +215,9 @@ function cinq_toc_filter_content( string $content ): string {
 	 *
 	 * @since 3.0.0 Renamed from `cinq_toc_post_types`.
 	 *
-	 * @param string[] $post_types Post type names. Default CINQ_TOC_POST_TYPES. An empty array disables the ids.
+	 * @param string[] $post_types Post type names. Default CINQ_WP_TABLE_OF_CONTENTS_POST_TYPES. An empty array disables the ids.
 	 */
-	$post_types = apply_filters( 'cinq_wp_table_of_contents_post_types', CINQ_TOC_POST_TYPES );
+	$post_types = apply_filters( 'cinq_wp_table_of_contents_post_types', CINQ_WP_TABLE_OF_CONTENTS_POST_TYPES );
 
 	if ( ! is_array( $post_types ) || array() === $post_types ) {
 		return $content;
@@ -227,7 +227,7 @@ function cinq_toc_filter_content( string $content ): string {
 		return $content;
 	}
 
-	return cinq_add_heading_ids( $content );
+	return cinq_wp_table_of_contents_add_heading_ids( $content );
 }
 
-add_filter( 'the_content', 'cinq_toc_filter_content', 12 );
+add_filter( 'the_content', 'cinq_wp_table_of_contents_filter_content', 12 );
