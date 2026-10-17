@@ -117,3 +117,7 @@ the_content();
 
 - Headings: `H2`–`H6` (`H1` is the document title, outside the content)
 - No options, no admin UI, no shortcode, no front-end assets
+
+## License
+
+MIT © [CINQ](https://agencecinq.com)
