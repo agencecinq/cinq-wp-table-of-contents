@@ -67,7 +67,7 @@ Ids are unique within the HTML string passed in, not across the whole page.
 
 ```php
 // Singular post types that receive ids via the_content (default: post, page).
-add_filter( 'cinq_toc_post_types', fn () => array( 'post', 'page', 'guide' ) );
+add_filter( 'cinq_wp_table_of_contents_post_types', fn () => array( 'post', 'page', 'guide' ) );
 ```
 
 ## Theme usage
@@ -117,6 +117,16 @@ the_content();
 
 - Headings: `H2`–`H6` (`H1` is the document title, outside the content)
 - No options, no admin UI, no shortcode, no front-end assets
+
+## Migration from 2.x
+
+3.0.0 names the hook after the plugin slug, like every CINQ plugin: `cinq-wp-table-of-contents` gives the `cinq_wp_table_of_contents_` prefix. The old name is not kept.
+
+| 2.x | 3.0.0 |
+| --- | --- |
+| `cinq_toc_post_types` | `cinq_wp_table_of_contents_post_types` |
+
+Rename the filter in `add_filter()` and `remove_filter()` calls. The functions and constants keep their names.
 
 ## License
 
