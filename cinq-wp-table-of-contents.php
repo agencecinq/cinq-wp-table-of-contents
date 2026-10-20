@@ -3,7 +3,7 @@
  * Plugin Name: CINQ Table of Contents
  * Plugin URI: https://github.com/agencecinq/cinq-wp-table-of-contents
  * Description: Adds unique ids to H2–H6 headings and exposes a nested TOC tree. No markup, no settings screen.
- * Version: 3.0.0
+ * Version: 3.0.1
  * Author: CINQ
  * Author URI: https://agencecinq.com/
  * Requires at least: 6.0
@@ -199,6 +199,8 @@ function cinq_wp_table_of_contents_items( string $content ): array {
 	return cinq_wp_table_of_contents_parse_items( cinq_wp_table_of_contents_add_heading_ids( $content ) );
 }
 
+add_filter( 'the_content', 'cinq_wp_table_of_contents_filter_content', 12 );
+
 /**
  * Inject heading ids on singular content for configured post types.
  *
@@ -229,5 +231,3 @@ function cinq_wp_table_of_contents_filter_content( string $content ): string {
 
 	return cinq_wp_table_of_contents_add_heading_ids( $content );
 }
-
-add_filter( 'the_content', 'cinq_wp_table_of_contents_filter_content', 12 );
